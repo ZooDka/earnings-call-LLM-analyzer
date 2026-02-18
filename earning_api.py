@@ -89,6 +89,7 @@ def _debug(message: str) -> None:
 
 def get_transcripts(symbol: str) -> tuple[dict, dict]:
     api_key = os.getenv("ALPHAVANTAGE_API_KEY", "").strip()
+    api_key = os.getenv("ALPHAVANTAGE_API_KEY", "").strip()
     if not api_key:
         raise RuntimeError("Missing ALPHAVANTAGE_API_KEY environment variable.")
 
