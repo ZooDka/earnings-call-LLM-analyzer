@@ -7,6 +7,23 @@ import urllib.request
 from pathlib import Path
 
 
+def _load_dotenv(path: Path) -> None:
+    if not path.is_file():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#") or "=" not in stripped:
+            continue
+        key, value = stripped.split("=", 1)
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+        os.environ.setdefault(key, value)
+
+
+# Load .env immediately on import so the key is available
+_load_dotenv(Path(__file__).with_name(".env"))
+
+
 def _quarter_sequence(start_date: datetime.date, count: int) -> list[str]:
     start_q = ((start_date.month - 1) // 3) + 1
     start_index = start_date.year * 4 + (start_q - 1)
@@ -70,21 +87,7 @@ def _debug(message: str) -> None:
         print(message, file=sys.stderr)
 
 
-def _load_dotenv(path: Path) -> None:
-    if not path.is_file():
-        return
-    for line in path.read_text(encoding="utf-8").splitlines():
-        stripped = line.strip()
-        if not stripped or stripped.startswith("#") or "=" not in stripped:
-            continue
-        key, value = stripped.split("=", 1)
-        key = key.strip()
-        value = value.strip().strip('"').strip("'")
-        os.environ.setdefault(key, value)
-
-
 def get_transcripts(symbol: str) -> tuple[dict, dict]:
-    _load_dotenv(Path(__file__).with_name(".env"))
     api_key = os.getenv("ALPHAVANTAGE_API_KEY", "").strip()
     if not api_key:
         raise RuntimeError("Missing ALPHAVANTAGE_API_KEY environment variable.")
