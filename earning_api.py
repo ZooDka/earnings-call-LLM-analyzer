@@ -86,6 +86,7 @@ def _load_dotenv(path: Path) -> None:
 def get_transcripts(symbol: str) -> tuple[dict, dict]:
     _load_dotenv(Path(__file__).with_name(".env"))
     api_key = os.getenv("ALPHAVANTAGE_API_KEY", "").strip()
+    api_key = os.getenv("ALPHAVANTAGE_API_KEY", "").strip()
     if not api_key:
         raise RuntimeError("Missing ALPHAVANTAGE_API_KEY environment variable.")
 
